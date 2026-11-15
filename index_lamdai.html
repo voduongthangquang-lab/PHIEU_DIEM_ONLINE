@@ -60,30 +60,41 @@
     </div>
 
     <script>
-        // Thiết lập tọa độ X, Y để điền chữ lên phôi
+        // Tọa độ X, Y đã được căn chỉnh lại cho phôi LAM_DAI_MOI.png
         const textCoords = {
-            'STT': {x: 2150, y: 160}, // TỌA ĐỘ MỚI CHO Ô STT (Hãy tăng giảm x, y để căn vào giữa ô)
-            'Họ và Tên': {x: 393, y: 753},
-            'Năm sinh': {x: 1820, y: 753},
-            'Giới tính': {x: 2250, y: 753},
-            'Địa chỉ': {x: 393, y: 840},
-            'Đơn vị': {x: 393, y: 928},
-            'Văn bằng': {x: 1106, y: 1014},
-            'Ngày cấp': {x: 393, y: 1102},
-            'Nơi cấp': {x: 1080, y: 1102},
-            'Cơ quan cấp': {x: 1829, y: 1102},
-            'Trình độ văn hóa': {x: 510, y: 1190},
-            'Số điện thoại': {x: 955, y: 1190},
-            'HLV Bảo Lãnh': {x: 1820, y: 1190},
-            'Xin dự thi cấp': {x: 500, y: 1278},
-            'Ngày':{x: 1957, y:2400},
-            'Tháng':{x: 2153, y:2400},
-            'Năm':{x: 2336, y:2400}
+            'STT': {x: 2250, y: 155}, // Ô STT góc trên phải (bạn có thể tăng giảm x để căn giữa ô)
+            
+            // Dòng 1
+            'Họ và Tên': {x: 320, y: 835},
+            'Năm sinh': {x: 1250, y: 835},
+            'Giới tính': {x: 1750, y: 835},
+            
+            // Dòng 2, 3, 4
+            'Địa chỉ': {x: 250, y: 920},
+            'Đơn vị': {x: 250, y: 1005},
+            'Văn bằng': {x: 1050, y: 1090},
+            
+            // Dòng 5
+            'Ngày cấp': {x: 320, y: 1175},
+            'Nơi cấp': {x: 920, y: 1175},
+            'Cơ quan cấp': {x: 1450, y: 1175},
+            
+            // Dòng 6
+            'Trình độ văn hóa': {x: 460, y: 1260},
+            'Số điện thoại': {x: 950, y: 1260},
+            'HLV Bảo Lãnh': {x: 1750, y: 1260},
+            
+            // Dòng 7
+            'Xin dự thi cấp': {x: 420, y: 1345},
+            
+            // Chữ ký (Góc dưới cùng bên phải)
+            'Ngày':{x: 1880, y: 2570},
+            'Tháng':{x: 2050, y: 2570},
+            'Năm':{x: 2260, y: 2570}
         };
 
-        // Tọa độ và kích thước khung ảnh thẻ
-        const photoBounds = { x: 228, y: 288, width: 297, height: 398 };
-
+        // Tọa độ và kích thước khung ảnh thẻ (căn chỉnh lại cho khung mới)
+        const photoBounds = { x: 225, y: 295, width: 290, height: 390 };
         // Hàm tiện ích: Tải file ảnh thành đối tượng Image của HTML
         const loadImage = (file) => {
             return new Promise((resolve, reject) => {
