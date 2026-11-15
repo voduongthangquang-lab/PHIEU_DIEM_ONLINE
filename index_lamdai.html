@@ -60,35 +60,27 @@
     </div>
 
     <script>
-        // Tọa độ đã được thu nhỏ theo tỷ lệ phôi mới
+        // Thiết lập tọa độ X, Y để điền chữ lên phôi
         const textCoords = {
-            'STT': {x: 720, y: 52},
-            
-            'Họ và Tên': {x: 102, y: 268},
-            'Năm sinh': {x: 400, y: 268},
-            'Giới tính': {x: 560, y: 268},
-            
-            'Địa chỉ': {x: 80, y: 295},
-            'Đơn vị': {x: 80, y: 322},
-            'Văn bằng': {x: 336, y: 349},
-            
-            'Ngày cấp': {x: 102, y: 376},
-            'Nơi cấp': {x: 294, y: 376},
-            'Cơ quan cấp': {x: 464, y: 376},
-            
-            'Trình độ văn hóa': {x: 147, y: 403},
-            'Số điện thoại': {x: 304, y: 403},
-            'HLV Bảo Lãnh': {x: 560, y: 403},
-            
-            'Xin dự thi cấp': {x: 134, y: 432},
-            
-            'Ngày':{x: 601, y: 820},
-            'Tháng':{x: 656, y: 820},
-            'Năm':{x: 723, y: 820}
+            'STT': {x: 2280, y: 160}, // Đã tăng X từ 2150 lên 2280 để dịch sang phải
+            'Địa chỉ': {x: 393, y: 840},
+            'Đơn vị': {x: 393, y: 928},
+            'Văn bằng': {x: 1106, y: 1014},
+            'Ngày cấp': {x: 393, y: 1102},
+            'Nơi cấp': {x: 1080, y: 1102},
+            'Cơ quan cấp': {x: 1829, y: 1102},
+            'Trình độ văn hóa': {x: 510, y: 1190},
+            'Số điện thoại': {x: 955, y: 1190},
+            'HLV Bảo Lãnh': {x: 1820, y: 1190},
+            'Xin dự thi cấp': {x: 500, y: 1278},
+            'Ngày':{x: 1957, y:2400},
+            'Tháng':{x: 2153, y:2400},
+            'Năm':{x: 2336, y:2400}
         };
 
-        // Kích thước ảnh thẻ cũng được thu nhỏ lại
-        const photoBounds = { x: 72, y: 94, width: 92, height: 124 };
+        // Tọa độ và kích thước khung ảnh thẻ
+        const photoBounds = { x: 228, y: 288, width: 297, height: 398 };
+
         // Hàm tiện ích: Tải file ảnh thành đối tượng Image của HTML
         const loadImage = (file) => {
             return new Promise((resolve, reject) => {
@@ -171,17 +163,18 @@
                     for (const [key, coords] of Object.entries(textCoords)) {
                         let value = row[key];
 
+                        // Nâng cấp: Tự động đánh số STT nếu cột STT trống hoặc không có trong Excel
                         if (key === 'STT' && (value === undefined || value === '')) {
-                            value = String(i + 1).padStart(2, '0');
+                            value = String(i + 1).padStart(2, '0'); // Ví dụ: 01, 02, 03...
                         }
 
                         if (value !== undefined && value !== null) {
-                            // CHÚ Ý SỬA LẠI FONT CHỮ Ở ĐÂY:
+                            // Cài đặt phông chữ đặc biệt cho ô STT để nó nổi bật hơn
                             if (key === 'STT') {
-                                ctx.font = "bold 20px 'Times New Roman'"; // Đã giảm từ 60px xuống 20px
-                                ctx.fillStyle = "black";
+                                ctx.font = "bold 60px 'Times New Roman'"; // In đậm và to hơn
+                                ctx.fillStyle = "black"; // Chuyển thành "red" nếu muốn STT màu đỏ
                             } else {
-                                ctx.font = "16px 'Times New Roman'";      // Đã giảm từ 50px xuống 16px
+                                ctx.font = "50px 'Times New Roman'";
                                 ctx.fillStyle = "black";
                             }
                             
