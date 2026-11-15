@@ -60,41 +60,35 @@
     </div>
 
     <script>
-        // Tọa độ X, Y đã được căn chỉnh lại cho phôi LAM_DAI_MOI.png
+        // Tọa độ đã được thu nhỏ theo tỷ lệ phôi mới
         const textCoords = {
-            'STT': {x: 2250, y: 155}, // Ô STT góc trên phải (bạn có thể tăng giảm x để căn giữa ô)
+            'STT': {x: 720, y: 52},
             
-            // Dòng 1
-            'Họ và Tên': {x: 320, y: 835},
-            'Năm sinh': {x: 1250, y: 835},
-            'Giới tính': {x: 1750, y: 835},
+            'Họ và Tên': {x: 102, y: 268},
+            'Năm sinh': {x: 400, y: 268},
+            'Giới tính': {x: 560, y: 268},
             
-            // Dòng 2, 3, 4
-            'Địa chỉ': {x: 250, y: 920},
-            'Đơn vị': {x: 250, y: 1005},
-            'Văn bằng': {x: 1050, y: 1090},
+            'Địa chỉ': {x: 80, y: 295},
+            'Đơn vị': {x: 80, y: 322},
+            'Văn bằng': {x: 336, y: 349},
             
-            // Dòng 5
-            'Ngày cấp': {x: 320, y: 1175},
-            'Nơi cấp': {x: 920, y: 1175},
-            'Cơ quan cấp': {x: 1450, y: 1175},
+            'Ngày cấp': {x: 102, y: 376},
+            'Nơi cấp': {x: 294, y: 376},
+            'Cơ quan cấp': {x: 464, y: 376},
             
-            // Dòng 6
-            'Trình độ văn hóa': {x: 460, y: 1260},
-            'Số điện thoại': {x: 950, y: 1260},
-            'HLV Bảo Lãnh': {x: 1750, y: 1260},
+            'Trình độ văn hóa': {x: 147, y: 403},
+            'Số điện thoại': {x: 304, y: 403},
+            'HLV Bảo Lãnh': {x: 560, y: 403},
             
-            // Dòng 7
-            'Xin dự thi cấp': {x: 420, y: 1345},
+            'Xin dự thi cấp': {x: 134, y: 432},
             
-            // Chữ ký (Góc dưới cùng bên phải)
-            'Ngày':{x: 1880, y: 2570},
-            'Tháng':{x: 2050, y: 2570},
-            'Năm':{x: 2260, y: 2570}
+            'Ngày':{x: 601, y: 820},
+            'Tháng':{x: 656, y: 820},
+            'Năm':{x: 723, y: 820}
         };
 
-        // Tọa độ và kích thước khung ảnh thẻ (căn chỉnh lại cho khung mới)
-        const photoBounds = { x: 225, y: 295, width: 290, height: 390 };
+        // Kích thước ảnh thẻ cũng được thu nhỏ lại
+        const photoBounds = { x: 72, y: 94, width: 92, height: 124 };
         // Hàm tiện ích: Tải file ảnh thành đối tượng Image của HTML
         const loadImage = (file) => {
             return new Promise((resolve, reject) => {
@@ -177,18 +171,17 @@
                     for (const [key, coords] of Object.entries(textCoords)) {
                         let value = row[key];
 
-                        // Nâng cấp: Tự động đánh số STT nếu cột STT trống hoặc không có trong Excel
                         if (key === 'STT' && (value === undefined || value === '')) {
-                            value = String(i + 1).padStart(2, '0'); // Ví dụ: 01, 02, 03...
+                            value = String(i + 1).padStart(2, '0');
                         }
 
                         if (value !== undefined && value !== null) {
-                            // Cài đặt phông chữ đặc biệt cho ô STT để nó nổi bật hơn
+                            // CHÚ Ý SỬA LẠI FONT CHỮ Ở ĐÂY:
                             if (key === 'STT') {
-                                ctx.font = "bold 60px 'Times New Roman'"; // In đậm và to hơn
-                                ctx.fillStyle = "black"; // Chuyển thành "red" nếu muốn STT màu đỏ
+                                ctx.font = "bold 20px 'Times New Roman'"; // Đã giảm từ 60px xuống 20px
+                                ctx.fillStyle = "black";
                             } else {
-                                ctx.font = "50px 'Times New Roman'";
+                                ctx.font = "16px 'Times New Roman'";      // Đã giảm từ 50px xuống 16px
                                 ctx.fillStyle = "black";
                             }
                             
