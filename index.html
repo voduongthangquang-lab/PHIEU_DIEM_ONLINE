@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TẠO PHIẾU DỰ THI THĂNG ĐAI MÔN PHÁI ONLINE</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            color: #b30000; /* Màu đỏ đô mang phong cách võ thuật/môn phái */
+            text-transform: uppercase;
+            border-bottom: 3px solid #b30000;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        .section-container {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #2980b9;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 10px;
+        }
+        /* Phần 1: Video */
+        .video-wrapper {
+            text-align: center;
+            margin-top: 15px;
+        }
+        video {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        /* Danh sách link tải */
+        ul.download-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul.download-list li {
+            margin-bottom: 15px;
+        }
+        .download-btn {
+            display: inline-block;
+            background-color: #27ae60;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .download-btn:hover {
+            background-color: #219150;
+        }
+        /* Phần 4: Grid link hệ thống */
+        .system-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .system-btn {
+            display: block;
+            text-align: center;
+            background-color: #2980b9;
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .system-btn:hover {
+            background-color: #1f6391;
+            transform: translateY(-2px);
+        }
+        /* Responsive cho điện thoại */
+        @media (max-width: 600px) {
+            .system-links {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>TẠO PHIẾU DỰ THI THĂNG ĐAI MÔN PHÁI ONLINE</h1>
+
+    <div class="section-container" style="border-left-color: #e67e22;">
+        <h2>Phần 1: Video hướng dẫn cách tạo phiếu dự thi</h2>
+        <p>Vui lòng xem kỹ video hướng dẫn bên dưới trước khi tiến hành tạo phiếu dự thi trên hệ thống.</p>
+        <div class="video-wrapper">
+            <video controls>
+                <source src="video_huong_dan_p1.mp4" type="video/mp4">
+                Trình duyệt của bạn không hỗ trợ thẻ video.
+            </video>
+        </div>
+    </div>
+
+    <div class="section-container" style="border-left-color: #8e44ad;">
+        <h2>Phần 2: Link tải các phiếu dự thi mẫu</h2>
+        <p>Bấm vào các nút dưới đây để tải về file ảnh mẫu (JPG) tương ứng với từng cấp đai:</p>
+        <ul class="download-list">
+            <li><a href="PHIEU_DU_THI_HOANG_DAI.jpg" download class="download-btn">📥 Tải Phiếu dự thi Hoàng Đai</a></li>
+            <li><a href="PHIEU_DU_THI_HONG_DAI.jpg" download class="download-btn">📥 Tải Phiếu dự thi Hồng Đai</a></li>
+            <li><a href="PHIEU_DU_THI_LUC_DAI.jpg" download class="download-btn">📥 Tải Phiếu dự thi Lục Đai</a></li>
+            <li><a href="LAM_DAI_MOI.jpg" download class="download-btn">📥 Tải Phiếu dự thi Lam Đai</a></li>
+        </ul>
+    </div>
+
+    <div class="section-container" style="border-left-color: #27ae60;">
+        <h2>Phần 3: File Excel Mẫu</h2>
+        <p>Sử dụng file Excel mẫu này để nhập danh sách võ sinh dự thi một cách chuẩn xác trước khi đưa lên hệ thống.</p>
+        <a href="Book1.xlsx" download class="download-btn" style="background-color: #16a085;">📊 Tải File Excel Mẫu (Book1.xlsx)</a>
+    </div>
+
+    <div class="section-container" style="border-left-color: #c0392b;">
+        <h2>Phần 4: Các cổng tạo phiếu dự thi</h2>
+        <p>Chọn đúng cấp đai cần tạo phiếu để truy cập vào hệ thống tương ứng:</p>
+        <div class="system-links">
+            <a href="index_lamdai.html" class="system-btn" style="background-color: #3498db;">🔵 TỪ LAM ĐAI I ĐẾN LAM ĐAI IV</a>
+            <a href="index_lucdai.html" class="system-btn" style="background-color: #2ecc71;">🟢 TỪ LỤC ĐAI I ĐẾN LỤC ĐAI IV</a>
+            <a href="index_hongdai.html" class="system-btn" style="background-color: #e74c3c;">🔴 TỪ HỒNG ĐAI I ĐẾN HỒNG ĐAI IV</a>
+            <a href="index_hoangdai.html" class="system-btn" style="background-color: #f1c40f; color: #333;">🟡 TỪ HOÀNG ĐAI I ĐẾN HOÀNG ĐAI IV</a>
+        </div>
+    </div>
+
+</body>
+</html>
