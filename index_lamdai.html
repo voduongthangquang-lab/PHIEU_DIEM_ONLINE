@@ -59,36 +59,33 @@
     </div>
 
     <script>
-        // Kích thước chuẩn của phôi LAM DAI NE.jpg (1275 x 1650)
-        // Hệ thống sẽ tự động nhân tỷ lệ nếu ảnh phôi thực tế có kích thước khác
         const REF_WIDTH = 1275;
         const REF_HEIGHT = 1650;
 
-        // Tọa độ chữ theo hệ quy chiếu 1275 x 1650
+        // Tọa độ chữ đã tinh chỉnh thẳng hàng với nhãn trên phôi LAM DAI NE.jpg
         const textCoords = {
             'STT': {x: 1140, y: 95},
-            'Họ và Tên': {x: 196, y: 376},
-            'Năm sinh': {x: 642, y: 376},
-            'Giới tính': {x: 872, y: 376},
-            'Địa chỉ': {x: 196, y: 420},
-            'Đơn vị': {x: 196, y: 464},
-            'Văn bằng': {x: 520, y: 507},
-            'Ngày cấp': {x: 196, y: 551},
-            'Nơi cấp': {x: 470, y: 551},
-            'Cơ quan cấp': {x: 755, y: 551},
-            'Trình độ văn hóa': {x: 260, y: 595},
-            'Số điện thoại': {x: 518, y: 598},
-            'HLV Bảo Lãnh': {x: 918, y: 595},
-            'Xin dự thi cấp': {x: 250, y: 639},
-            'Ngày': {x: 978, y: 1198},
-            'Tháng': {x: 1076, y: 1198},
-            'Năm': {x: 1168, y: 1198}
+            'Họ và Tên': {x: 196, y: 381},
+            'Năm sinh': {x: 642, y: 381},
+            'Giới tính': {x: 872, y: 381},
+            'Địa chỉ': {x: 196, y: 425},
+            'Đơn vị': {x: 196, y: 469},
+            'Văn bằng': {x: 514, y: 512},
+            'Ngày cấp': {x: 196, y: 556},
+            'Nơi cấp': {x: 462, y: 556},
+            'Cơ quan cấp': {x: 752, y: 556},
+            'Trình độ văn hóa': {x: 260, y: 600},
+            'Số điện thoại': {x: 513, y: 603},
+            'HLV Bảo Lãnh': {x: 915, y: 600},
+            'Xin dự thi cấp': {x: 250, y: 644},
+            'Ngày': {x: 978, y: 1193},
+            'Tháng': {x: 1076, y: 1193},
+            'Năm': {x: 1168, y: 1193}
         };
 
-        // Tọa độ và kích thước khung ảnh thẻ theo hệ quy chiếu 1275 x 1650
+        // Tọa độ và kích thước khung ảnh thẻ
         const photoBounds = { x: 114, y: 144, width: 149, height: 199 };
 
-        // Hàm tiện ích: Tải file ảnh thành đối tượng Image của HTML
         const loadImage = (file) => {
             return new Promise((resolve, reject) => {
                 if (!file) return resolve(null);
@@ -116,7 +113,6 @@
             statusBox.innerText = "Đang đọc dữ liệu...";
 
             try {
-                // 1. Đọc dữ liệu từ file Excel
                 const excelData = await excelInput.files[0].arrayBuffer();
                 const workbook = XLSX.read(excelData);
                 const sheet = workbook.Sheets[workbook.SheetNames[0]];
@@ -124,41 +120,31 @@
 
                 if (rows.length === 0) throw new Error("File Excel không có dữ liệu!");
 
-                // 2. Tạo bản đồ tra cứu ảnh thẻ nhanh (Tên file -> File object)
                 const photoMap = {};
                 for (let file of folderInput.files) {
                     photoMap[file.name] = file;
                 }
 
-                // 3. Tải phôi ảnh lên
                 const templateImg = await loadImage(templateInput.files[0]);
-
-                // Khởi tạo đối tượng tạo ZIP
                 const zip = new JSZip();
 
-                // Khởi tạo Canvas theo đúng kích thước phôi thực tế
                 const canvas = document.createElement('canvas');
                 canvas.width = templateImg.width;
                 canvas.height = templateImg.height;
                 const ctx = canvas.getContext('2d');
 
-                // Tính tỷ lệ co giãn tự động theo kích thước phôi thực tế
                 const scaleX = canvas.width / REF_WIDTH;
                 const scaleY = canvas.height / REF_HEIGHT;
 
-                // 4. Lặp qua từng dòng dữ liệu (từng võ sinh)
                 for (let i = 0; i < rows.length; i++) {
                     const row = rows[i];
                     statusBox.innerText = `Đang xử lý hồ sơ ${i + 1} / ${rows.length}...`;
 
-                    // Giúp UI không bị treo bằng cách nhường quyền xử lý một chút
                     await new Promise(r => setTimeout(r, 10));
 
-                    // Vẽ lại phôi mới
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     ctx.drawImage(templateImg, 0, 0);
 
-                    // Xử lý vẽ ảnh thẻ
                     const photoName = row['Tên ảnh thẻ'];
                     if (photoName && photoMap[photoName]) {
                         const studentImg = await loadImage(photoMap[photoName]);
@@ -173,14 +159,11 @@
                         }
                     }
 
-                    // Thiết lập mặc định
                     ctx.textBaseline = "top";
 
-                    // Điền Text
                     for (const [key, coords] of Object.entries(textCoords)) {
                         let value = row[key];
 
-                        // Tự động đánh số STT nếu cột STT trống hoặc không có trong Excel
                         if (key === 'STT' && (value === undefined || value === '')) {
                             value = String(i + 1).padStart(2, '0');
                         }
@@ -201,10 +184,8 @@
                         }
                     }
 
-                    // Lấy dữ liệu ảnh và lưu vào ZIP
                     const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.95));
 
-                    // Xử lý tạo tên chuẩn
                     const rawName = String(row['Họ và Tên'] || 'KhongTen');
                     const cleanName = rawName.replace(/\s+/g, '');
                     const serial = String(i + 1).padStart(3, '0');
@@ -216,7 +197,6 @@
 
                 statusBox.innerText = "Đang nén file ZIP, vui lòng đợi giây lát...";
 
-                // 5. Xuất file ZIP
                 const zipBlob = await zip.generateAsync({type: 'blob'});
                 const downloadLink = document.createElement('a');
                 downloadLink.href = URL.createObjectURL(zipBlob);
