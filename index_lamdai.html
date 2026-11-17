@@ -21,10 +21,9 @@
         .status-processing { background-color: #fef9e7; color: #d35400; display: block !important; }
         .status-success { background-color: #e8f8f5; color: #16a085; display: block !important; }
         .status-error { background-color: #fdedec; color: #c0392b; display: block !important; }
-        /* NEW: banner trên cùng */
         .top-banner {
-            color: #1e88e5; /* xanh dương */
-            font-size: 28px;
+            color: #1e88e5;
+            font-size: 26px;
             font-weight: 800;
             text-align: center;
             margin: 0 0 18px 0;
@@ -36,8 +35,8 @@
 <body>
 
     <div class="container">
-        <div class="top-banner">TỪ LAM ĐAI I ĐẾN LAM ĐAI IV</div>
-        <h2> Tạo Phiếu Dự Thi</h2>
+        <div class="top-banner">DÀNH CHO CÁC CẤP DỰ THI LAM ĐAI</div>
+        <h2>Tạo Phiếu Dự Thi</h2>
 
         <div class="form-group">
             <label>1. Chọn File Danh Sách (Excel):</label>
@@ -45,7 +44,7 @@
         </div>
 
         <div class="form-group">
-            <label>2. Chọn Phôi Phiếu Điểm (JPG/PNG):</label>
+            <label>2. Chọn Phôi Phiếu Điểm (LAM DAI NE.jpg):</label>
             <input type="file" id="template-file" accept="image/jpeg, image/png" />
         </div>
 
@@ -60,25 +59,28 @@
     </div>
 
     <script>
+        // Tọa độ chữ đã căn chỉnh theo phôi LAM DAI NE.jpg (khổ gốc 2550x3300)
         const textCoords = {
             'STT': {x: 2280, y: 190},
             'Họ và Tên': {x: 393, y: 753},
+            'Năm sinh': {x: 1285, y: 753},
+            'Giới tính': {x: 1745, y: 753},
             'Địa chỉ': {x: 393, y: 840},
             'Đơn vị': {x: 393, y: 928},
-            'Văn bằng': {x: 1106, y: 1014},
+            'Văn bằng': {x: 1040, y: 1014},
             'Ngày cấp': {x: 393, y: 1102},
-            'Nơi cấp': {x: 1080, y: 1102},
-            'Cơ quan cấp': {x: 1829, y: 1102},
-            'Trình độ văn hóa': {x: 510, y: 1190},
-            'Số điện thoại': {x: 955, y: 1190},
-            'HLV Bảo Lãnh': {x: 1820, y: 1190},
+            'Nơi cấp': {x: 940, y: 1102},
+            'Cơ quan cấp': {x: 1510, y: 1102},
+            'Trình độ văn hóa': {x: 520, y: 1190},
+            'Số điện thoại': {x: 1028, y: 1196},
+            'HLV Bảo Lãnh': {x: 1835, y: 1190},
             'Xin dự thi cấp': {x: 500, y: 1278},
-            'Ngày':{x: 1957, y:2400},
-            'Tháng':{x: 2153, y:2400},
-            'Năm':{x: 2336, y:2400}
+            'Ngày': {x: 1957, y: 2395},
+            'Tháng': {x: 2153, y: 2395},
+            'Năm': {x: 2336, y: 2395}
         };
 
-        // Tọa độ và kích thước khung ảnh thẻ
+        // Tọa độ và kích thước khung ảnh thẻ (giữ nguyên vị trí khớp khung)
         const photoBounds = { x: 228, y: 288, width: 297, height: 398 };
 
         // Hàm tiện ích: Tải file ảnh thành đối tượng Image của HTML
@@ -141,7 +143,7 @@
                     statusBox.innerText = `Đang xử lý hồ sơ ${i + 1} / ${rows.length}...`;
 
                     // Giúp UI không bị treo bằng cách nhường quyền xử lý một chút
-                    await new Promise(r => setTimeout(r, 10)); 
+                    await new Promise(r => setTimeout(r, 10));
 
                     // Vẽ lại phôi mới
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -157,27 +159,30 @@
                     }
 
                     // Thiết lập mặc định
-                    ctx.textBaseline = "top"; 
+                    ctx.textBaseline = "top";
 
                     // Điền Text
                     for (const [key, coords] of Object.entries(textCoords)) {
                         let value = row[key];
 
-                        // Nâng cấp: Tự động đánh số STT nếu cột STT trống hoặc không có trong Excel
+                        // Tự động đánh số STT nếu cột STT trống hoặc không có trong Excel
                         if (key === 'STT' && (value === undefined || value === '')) {
-                            value = String(i + 1).padStart(2, '0'); // Ví dụ: 01, 02, 03...
+                            value = String(i + 1).padStart(2, '0');
                         }
 
                         if (value !== undefined && value !== null) {
-                            // Cài đặt phông chữ đặc biệt cho ô STT để nó nổi bật hơn
                             if (key === 'STT') {
-                                ctx.font = "bold 60px 'Times New Roman'"; // In đậm và to hơn
-                                ctx.fillStyle = "black"; // Chuyển thành "red" nếu muốn STT màu đỏ
+                                ctx.font = "bold 60px 'Times New Roman'";
+                                ctx.fillStyle = "black";
+                            } else if (key === 'Số điện thoại') {
+                                // Cỡ chữ 40px để số điện thoại 10 chữ số không đè lên chữ "HLV bảo lãnh"
+                                ctx.font = "40px 'Times New Roman'";
+                                ctx.fillStyle = "black";
                             } else {
                                 ctx.font = "50px 'Times New Roman'";
                                 ctx.fillStyle = "black";
                             }
-                            
+
                             ctx.fillText(String(value), coords.x, coords.y);
                         }
                     }
@@ -187,8 +192,8 @@
 
                     // Xử lý tạo tên chuẩn
                     const rawName = String(row['Họ và Tên'] || 'KhongTen');
-                    const cleanName = rawName.replace(/\s+/g, ''); // Bỏ toàn bộ khoảng trắng
-                    const serial = String(i + 1).padStart(3, '0'); // Định dạng 001, 002...
+                    const cleanName = rawName.replace(/\s+/g, '');
+                    const serial = String(i + 1).padStart(3, '0');
 
                     const fileName = `${serial}_${cleanName}_Certificate.jpg`;
 
