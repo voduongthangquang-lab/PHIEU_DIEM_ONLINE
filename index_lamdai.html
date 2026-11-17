@@ -59,29 +59,34 @@
     </div>
 
     <script>
-        // Tọa độ chữ đã căn chỉnh theo phôi LAM DAI NE.jpg (khổ gốc 2550x3300)
+        // Kích thước chuẩn của phôi LAM DAI NE.jpg (1275 x 1650)
+        // Hệ thống sẽ tự động nhân tỷ lệ nếu ảnh phôi thực tế có kích thước khác
+        const REF_WIDTH = 1275;
+        const REF_HEIGHT = 1650;
+
+        // Tọa độ chữ theo hệ quy chiếu 1275 x 1650
         const textCoords = {
-            'STT': {x: 2280, y: 190},
-            'Họ và Tên': {x: 393, y: 753},
-            'Năm sinh': {x: 1285, y: 753},
-            'Giới tính': {x: 1745, y: 753},
-            'Địa chỉ': {x: 393, y: 840},
-            'Đơn vị': {x: 393, y: 928},
-            'Văn bằng': {x: 1040, y: 1014},
-            'Ngày cấp': {x: 393, y: 1102},
-            'Nơi cấp': {x: 940, y: 1102},
-            'Cơ quan cấp': {x: 1510, y: 1102},
-            'Trình độ văn hóa': {x: 520, y: 1190},
-            'Số điện thoại': {x: 1028, y: 1196},
-            'HLV Bảo Lãnh': {x: 1835, y: 1190},
-            'Xin dự thi cấp': {x: 500, y: 1278},
-            'Ngày': {x: 1957, y: 2395},
-            'Tháng': {x: 2153, y: 2395},
-            'Năm': {x: 2336, y: 2395}
+            'STT': {x: 1140, y: 95},
+            'Họ và Tên': {x: 196, y: 376},
+            'Năm sinh': {x: 642, y: 376},
+            'Giới tính': {x: 872, y: 376},
+            'Địa chỉ': {x: 196, y: 420},
+            'Đơn vị': {x: 196, y: 464},
+            'Văn bằng': {x: 520, y: 507},
+            'Ngày cấp': {x: 196, y: 551},
+            'Nơi cấp': {x: 470, y: 551},
+            'Cơ quan cấp': {x: 755, y: 551},
+            'Trình độ văn hóa': {x: 260, y: 595},
+            'Số điện thoại': {x: 518, y: 598},
+            'HLV Bảo Lãnh': {x: 918, y: 595},
+            'Xin dự thi cấp': {x: 250, y: 639},
+            'Ngày': {x: 978, y: 1198},
+            'Tháng': {x: 1076, y: 1198},
+            'Năm': {x: 1168, y: 1198}
         };
 
-        // Tọa độ và kích thước khung ảnh thẻ (giữ nguyên vị trí khớp khung)
-        const photoBounds = { x: 228, y: 288, width: 297, height: 398 };
+        // Tọa độ và kích thước khung ảnh thẻ theo hệ quy chiếu 1275 x 1650
+        const photoBounds = { x: 114, y: 144, width: 149, height: 199 };
 
         // Hàm tiện ích: Tải file ảnh thành đối tượng Image của HTML
         const loadImage = (file) => {
@@ -131,11 +136,15 @@
                 // Khởi tạo đối tượng tạo ZIP
                 const zip = new JSZip();
 
-                // Khởi tạo Canvas để vẽ
+                // Khởi tạo Canvas theo đúng kích thước phôi thực tế
                 const canvas = document.createElement('canvas');
                 canvas.width = templateImg.width;
                 canvas.height = templateImg.height;
                 const ctx = canvas.getContext('2d');
+
+                // Tính tỷ lệ co giãn tự động theo kích thước phôi thực tế
+                const scaleX = canvas.width / REF_WIDTH;
+                const scaleY = canvas.height / REF_HEIGHT;
 
                 // 4. Lặp qua từng dòng dữ liệu (từng võ sinh)
                 for (let i = 0; i < rows.length; i++) {
@@ -154,7 +163,13 @@
                     if (photoName && photoMap[photoName]) {
                         const studentImg = await loadImage(photoMap[photoName]);
                         if (studentImg) {
-                            ctx.drawImage(studentImg, photoBounds.x, photoBounds.y, photoBounds.width, photoBounds.height);
+                            ctx.drawImage(
+                                studentImg,
+                                photoBounds.x * scaleX,
+                                photoBounds.y * scaleY,
+                                photoBounds.width * scaleX,
+                                photoBounds.height * scaleY
+                            );
                         }
                     }
 
@@ -172,18 +187,17 @@
 
                         if (value !== undefined && value !== null) {
                             if (key === 'STT') {
-                                ctx.font = "bold 60px 'Times New Roman'";
+                                ctx.font = `bold ${Math.round(30 * scaleY)}px 'Times New Roman'`;
                                 ctx.fillStyle = "black";
                             } else if (key === 'Số điện thoại') {
-                                // Cỡ chữ 40px để số điện thoại 10 chữ số không đè lên chữ "HLV bảo lãnh"
-                                ctx.font = "40px 'Times New Roman'";
+                                ctx.font = `${Math.round(20 * scaleY)}px 'Times New Roman'`;
                                 ctx.fillStyle = "black";
                             } else {
-                                ctx.font = "50px 'Times New Roman'";
+                                ctx.font = `${Math.round(25 * scaleY)}px 'Times New Roman'`;
                                 ctx.fillStyle = "black";
                             }
 
-                            ctx.fillText(String(value), coords.x, coords.y);
+                            ctx.fillText(String(value), coords.x * scaleX, coords.y * scaleY);
                         }
                     }
 
