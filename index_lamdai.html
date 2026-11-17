@@ -62,7 +62,7 @@
         const REF_WIDTH = 1275;
         const REF_HEIGHT = 1650;
 
-        // Tọa độ chữ đã tinh chỉnh thẳng hàng với nhãn trên phôi LAM DAI NE.jpg
+        // Tọa độ chữ cập nhật theo phôi LAM DAI NE.jpg mới
         const textCoords = {
             'STT': {x: 1140, y: 95},
             'Họ và Tên': {x: 196, y: 381},
@@ -72,15 +72,15 @@
             'Đơn vị': {x: 196, y: 469},
             'Văn bằng': {x: 514, y: 512},
             'Ngày cấp': {x: 196, y: 556},
-            'Nơi cấp': {x: 462, y: 556},
-            'Cơ quan cấp': {x: 752, y: 556},
+            'Nơi cấp': {x: 475, y: 556},
+            'Cơ quan cấp': {x: 910, y: 556},
             'Trình độ văn hóa': {x: 260, y: 600},
-            'Số điện thoại': {x: 513, y: 603},
-            'HLV Bảo Lãnh': {x: 915, y: 600},
+            'Số điện thoại': {x: 522, y: 600},
+            'HLV Bảo Lãnh': {x: 1068, y: 600},
             'Xin dự thi cấp': {x: 250, y: 644},
-            'Ngày': {x: 978, y: 1193},
-            'Tháng': {x: 1076, y: 1193},
-            'Năm': {x: 1168, y: 1193}
+            'Ngày': {x: 978, y: 1198},
+            'Tháng': {x: 1076, y: 1198},
+            'Năm': {x: 1168, y: 1198}
         };
 
         // Tọa độ và kích thước khung ảnh thẻ
@@ -172,8 +172,8 @@
                             if (key === 'STT') {
                                 ctx.font = `bold ${Math.round(30 * scaleY)}px 'Times New Roman'`;
                                 ctx.fillStyle = "black";
-                            } else if (key === 'Số điện thoại') {
-                                ctx.font = `${Math.round(20 * scaleY)}px 'Times New Roman'`;
+                            } else if (key === 'Họ và Tên' || key === 'Xin dự thi cấp') {
+                                ctx.font = `bold ${Math.round(25 * scaleY)}px 'Times New Roman'`;
                                 ctx.fillStyle = "black";
                             } else {
                                 ctx.font = `${Math.round(25 * scaleY)}px 'Times New Roman'`;
