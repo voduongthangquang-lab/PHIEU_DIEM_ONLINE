@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công cụ Điền Phiếu Dự Thi Hàng Loạt</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #063b2a url("nen_luc_dai.jpg") center / cover fixed no-repeat;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            line-height: 1.6;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+            max-width: 600px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        h2 { color: #1b3a2b; text-align: center; margin-top: 0; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: #1f4433; }
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            border: 1px dashed #66bb6a;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.65);
+            box-sizing: border-box;
+        }
+        button { background-color: #27ae60; color: white; border: none; padding: 12px; width: 100%; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: background 0.3s; margin-top: 10px; }
+        button:hover { background-color: #219150; }
+        button:disabled { background-color: #95a5a6; cursor: not-allowed; }
+        #status-box { margin-top: 20px; padding: 15px; border-radius: 6px; display: none; font-weight: bold; text-align: center; }
+        .status-processing { background-color: #fef9e7; color: #d35400; display: block !important; }
+        .status-success { background-color: #e8f8f5; color: #16a085; display: block !important; }
+        .status-error { background-color: #fdedec; color: #c0392b; display: block !important; }
+        .top-banner {
+            color: #157347;
+            font-size: 26px;
+            font-weight: 800;
+            text-align: center;
+            margin: 0 0 18px 0;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="top-banner">DÀNH CHO CÁC CẤP DỰ THI LỤC ĐAI</div>
+        <h2>Tự Động Tạo Phiếu Dự Thi</h2>
+
+        <div class="form-group">
+            <label>1. Chọn File Danh Sách (Excel):</label>
+            <input type="file" id="excel-file" accept=".xlsx, .xls" />
+        </div>
+
+        <div class="form-group">
+            <label>2. Chọn Phôi Phiếu Điểm (PHIEU_DU_THI_LUC_DAI.jpg):</label>
+            <input type="file" id="template-file" accept="image/jpeg, image/png" />
+        </div>
+
+        <div class="form-group">
+            <label>3. Chọn Thư Mục Chứa Ảnh Thẻ:</label>
+            <input type="file" id="photo-folder" webkitdirectory directory multiple />
+        </div>
+
+        <button id="run-btn" onclick="processData()">🚀 BẮT ĐẦU XUẤT FILE ZIP</button>
+
+        <div id="status-box"></div>
+    </div>
+
+    <script>
+        // Hệ quy chiếu chuẩn 1275 x 1650 (tự động co giãn theo kích thước ảnh phôi thực tế)
+        const REF_WIDTH = 1275;
+        const REF_HEIGHT = 1650;
+
+        // Tọa độ chữ đã căn chỉnh khớp với phôi PHIEU_DU_THI_LUC_DAI.jpg
+        const textCoords = {
+            'STT': {x: 1140, y: 91},
+            'Họ và Tên': {x: 196, y: 381},
+            'Năm sinh': {x: 642, y: 381},
+            'Giới tính': {x: 872, y: 381},
+            'Địa chỉ': {x: 196, y: 425},
+            'Đơn vị': {x: 196, y: 469},
+            'Văn bằng': {x: 514, y: 512},
+            'Ngày cấp': {x: 196, y: 556},
+            'Nơi cấp': {x: 475, y: 556},
+            'Cơ quan cấp': {x: 840, y: 556},
+            'Trình độ văn hóa': {x: 260, y: 600},
+            'Số điện thoại': {x: 528, y: 600},
+            'HLV Bảo Lãnh': {x: 1028, y: 600},
+            'Xin dự thi cấp': {x: 250, y: 644},
+            'Ngày': {x: 978, y: 1324},
+            'Tháng': {x: 1076, y: 1324},
+            'Năm': {x: 1168, y: 1324}
+        };
+
+        // Tọa độ và kích thước khung ảnh thẻ
+        const photoBounds = { x: 115, y: 145, width: 148, height: 199 };
+
+        // Hàm tiện ích: Tải file ảnh thành đối tượng Image của HTML
+        const loadImage = (file) => {
+            return new Promise((resolve, reject) => {
+                if (!file) return resolve(null);
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = URL.createObjectURL(file);
+            });
+        };
+
+        async function processData() {
+            const excelInput = document.getElementById('excel-file');
+            const templateInput = document.getElementById('template-file');
+            const folderInput = document.getElementById('photo-folder');
+            const statusBox = document.getElementById('status-box');
+            const runBtn = document.getElementById('run-btn');
+
+            if (!excelInput.files[0] || !templateInput.files[0] || folderInput.files.length === 0) {
+                alert("Vui lòng chọn đầy đủ Excel, Phôi ảnh và Thư mục ảnh thẻ!");
+                return;
+            }
+
+            runBtn.disabled = true;
+            statusBox.className = "status-processing";
+            statusBox.innerText = "Đang đọc dữ liệu...";
+
+            try {
+                // 1. Đọc dữ liệu từ file Excel
+                const excelData = await excelInput.files[0].arrayBuffer();
+                const workbook = XLSX.read(excelData);
+                const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                const rows = XLSX.utils.sheet_to_json(sheet);
+
+                if (rows.length === 0) throw new Error("File Excel không có dữ liệu!");
+
+                // 2. Tạo bản đồ tra cứu ảnh thẻ nhanh (Tên file -> File object)
+                const photoMap = {};
+                for (let file of folderInput.files) {
+                    photoMap[file.name] = file;
+                }
+
+                // 3. Tải phôi ảnh lên
+                const templateImg = await loadImage(templateInput.files[0]);
+
+                // Khởi tạo đối tượng tạo ZIP
+                const zip = new JSZip();
+
+                // Khởi tạo Canvas để vẽ
+                const canvas = document.createElement('canvas');
+                canvas.width = templateImg.width;
+                canvas.height = templateImg.height;
+                const ctx = canvas.getContext('2d');
+
+                const scaleX = canvas.width / REF_WIDTH;
+                const scaleY = canvas.height / REF_HEIGHT;
+
+                // 4. Lặp qua từng dòng dữ liệu (từng võ sinh)
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i];
+                    statusBox.innerText = `Đang xử lý hồ sơ ${i + 1} / ${rows.length}...`;
+
+                    // Giúp UI không bị treo bằng cách nhường quyền xử lý một chút
+                    await new Promise(r => setTimeout(r, 10));
+
+                    // Vẽ lại phôi mới
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(templateImg, 0, 0);
+
+                    // Xử lý vẽ ảnh thẻ
+                    const photoName = row['Tên ảnh thẻ'];
+                    if (photoName && photoMap[photoName]) {
+                        const studentImg = await loadImage(photoMap[photoName]);
+                        if (studentImg) {
+                            ctx.drawImage(
+                                studentImg,
+                                photoBounds.x * scaleX,
+                                photoBounds.y * scaleY,
+                                photoBounds.width * scaleX,
+                                photoBounds.height * scaleY
+                            );
+                        }
+                    }
+
+                    // Thiết lập mặc định
+                    ctx.textBaseline = "top";
+                    ctx.fillStyle = "black";
+
+                    // Điền Text
+                    for (const [key, coords] of Object.entries(textCoords)) {
+                        let value = row[key];
+
+                        // Tự động đánh số STT nếu cột STT trống hoặc không có trong Excel
+                        if (key === 'STT' && (value === undefined || value === '')) {
+                            value = String(i + 1).padStart(2, '0');
+                        }
+
+                        if (value !== undefined && value !== null) {
+                            if (key === 'STT') {
+                                ctx.font = `bold ${Math.round(30 * scaleY)}px 'Times New Roman'`;
+                            } else if (key === 'Họ và Tên' || key === 'Xin dự thi cấp') {
+                                ctx.font = `bold ${Math.round(25 * scaleY)}px 'Times New Roman'`;
+                            } else {
+                                ctx.font = `${Math.round(25 * scaleY)}px 'Times New Roman'`;
+                            }
+
+                            ctx.fillText(String(value), coords.x * scaleX, coords.y * scaleY);
+                        }
+                    }
+
+                    // Lấy dữ liệu ảnh và lưu vào ZIP
+                    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.95));
+
+                    // Xử lý tạo tên chuẩn
+                    const rawName = String(row['Họ và Tên'] || 'KhongTen');
+                    const cleanName = rawName.replace(/\s+/g, '');
+                    const serial = String(i + 1).padStart(3, '0');
+
+                    const fileName = `${serial}_${cleanName}_Certificate.jpg`;
+
+                    zip.file(fileName, blob);
+                }
+
+                statusBox.innerText = "Đang nén file ZIP, vui lòng đợi giây lát...";
+
+                // 5. Xuất file ZIP
+                const zipBlob = await zip.generateAsync({type: 'blob'});
+                const downloadLink = document.createElement('a');
+                downloadLink.href = URL.createObjectURL(zipBlob);
+                downloadLink.download = "DanhSach_PhieuDuThi_lucdai.zip";
+                downloadLink.click();
+
+                statusBox.className = "status-success";
+                statusBox.innerText = `✅ Hoàn tất! Đã nén thành công ${rows.length} phiếu dự thi.`;
+
+            } catch (error) {
+                console.error(error);
+                statusBox.className = "status-error";
+                statusBox.innerText = `❌ Lỗi: ${error.message}`;
+            } finally {
+                runBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
