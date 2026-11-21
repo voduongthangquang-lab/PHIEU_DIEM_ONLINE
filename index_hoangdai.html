@@ -128,7 +128,7 @@
     <script>
         // Thiết lập tọa độ X, Y để điền chữ lên phôi
         const textCoords = {
-            'STT': {x: 2185, y: 192},
+            'STT': {x: 2235, y: 192},
             'Họ và Tên': {x: 393, y: 753},
             'Năm sinh': {x: 1820, y: 753},
             'Giới tính': {x: 2250, y: 753},
@@ -225,10 +225,30 @@
                         }
                     }
 
-                    // Thiết lập font chữ
-                    ctx.font = "50px 'Times New Roman'";
+                 // Thiết lập màu chữ và căn lề trên
                     ctx.fillStyle = "black";
-                    ctx.textBaseline = "top"; // Căn text từ phía trên để giống với Python
+                    ctx.textBaseline = "top";
+
+                    // Điền Text
+                    for (const [key, coords] of Object.entries(textCoords)) {
+                        let value = row[key];
+                        
+                        // Tự động lấy số thứ tự dòng nếu cột STT trong Excel trống
+                        if (key === 'STT' && (value === undefined || value === null || value === '')) {
+                            value = i + 1;
+                        }
+
+                        if (value !== undefined && value !== null) {
+                            // In đậm riêng 'Họ và Tên' và 'Xin dự thi cấp'
+                            if (key === 'Họ và Tên' || key === 'Xin dự thi cấp') {
+                                ctx.font = "bold 50px 'Times New Roman'";
+                            } else {
+                                ctx.font = "50px 'Times New Roman'";
+                            }
+
+                            ctx.fillText(String(value), coords.x, coords.y);
+                        }
+                    }
 
                     // Điền Text
                     for (const [key, coords] of Object.entries(textCoords)) {
