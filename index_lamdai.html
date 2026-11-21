@@ -7,72 +7,96 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
-    <style>
-       body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    /* Đổi màu nền dự phòng sang xanh dương đậm khớp với ảnh */
-    background: #0042a5 url("nen_lam_dai.png") center / cover fixed no-repeat;
-    color: #333;
-    margin: 0;
-    padding: 20px;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
-    line-height: 1.6;
-}
-
-.container {
-    /* Tăng độ đục lên 0.86 và blur lên 8px để chữ sắc nét trên nền rực */
-    background-color: rgba(255, 255, 255, 0.86);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    padding: 30px;
-    border-radius: 14px;
-    /* Đổ bóng tối hơn để nổi khối trên nền xanh đậm */
-    box-shadow: 0 12px 36px rgba(0, 20, 60, 0.45);
-    max-width: 600px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-h2 { 
-    color: #0a2e5c; 
-    text-align: center; 
-    margin-top: 0; 
-}
-
-.top-banner {
-    color: #0d47a1;
-    font-size: 26px;
-    font-weight: 800;
-    text-align: center;
-    margin: 0 0 18px 0;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-button { 
-    /* Đổi sang xanh dương đồng bộ với tông nền */
-    background-color: #0d47a1; 
-    color: white; 
-    border: none; 
-    padding: 12px; 
-    width: 100%; 
-    font-size: 16px; 
-    font-weight: bold; 
-    border-radius: 6px; 
-    cursor: pointer; 
-    transition: background 0.3s; 
-    margin-top: 10px; 
-}
-
-button:hover { 
-    background-color: #08306b; 
-}    
+  <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0042a5 url("nen_lam_dai.png") center / cover fixed no-repeat;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            line-height: 1.6;
         }
+        .container {
+            background-color: rgba(255, 255, 255, 0.86);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 12px 36px rgba(0, 20, 60, 0.45);
+            max-width: 600px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .top-banner {
+            color: #0d47a1;
+            font-size: 26px;
+            font-weight: 800;
+            text-align: center;
+            margin: 0 0 18px 0;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        h2 { 
+            color: #0a2e5c; 
+            text-align: center; 
+            margin-top: 0; 
+        }
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        label { 
+            display: block; 
+            font-weight: bold; 
+            margin-bottom: 8px; 
+            color: #243b53; 
+        }
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            border: 1px dashed #64b5f6;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.75);
+            box-sizing: border-box;
+        }
+        button { 
+            background-color: #0d47a1; 
+            color: white; 
+            border: none; 
+            padding: 12px; 
+            width: 100%; 
+            font-size: 16px; 
+            font-weight: bold; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            transition: background 0.3s; 
+            margin-top: 10px; 
+        }
+        button:hover { 
+            background-color: #08306b; 
+        }
+        button:disabled { 
+            background-color: #95a5a6; 
+            cursor: not-allowed; 
+        }
+        #status-box { 
+            margin-top: 20px; 
+            padding: 15px; 
+            border-radius: 6px; 
+            display: none; 
+            font-weight: bold; 
+            text-align: center; 
+        }
+        .status-processing { background-color: #fef9e7; color: #d35400; display: block !important; }
+        .status-success { background-color: #e8f8f5; color: #16a085; display: block !important; }
+        .status-error { background-color: #fdedec; color: #c0392b; display: block !important; }
     </style>
 </head>
 <body>
