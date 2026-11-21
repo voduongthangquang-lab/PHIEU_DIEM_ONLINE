@@ -142,9 +142,9 @@
             'Số điện thoại': {x: 990, y: 1190},
             'HLV Bảo Lãnh': {x: 1930, y: 1190},
             'Xin dự thi cấp': {x: 500, y: 1278},
-            'Ngày':{x: 1957, y:2645},
-            'Tháng':{x: 2153, y:2645},
-            'Năm':{x: 2336, y:2645}
+            'Ngày': {x: 1957, y: 2645},
+            'Tháng': {x: 2153, y: 2645},
+            'Năm': {x: 2336, y: 2645}
         };
 
         // Tọa độ và kích thước khung ảnh thẻ
@@ -222,10 +222,11 @@
                         const studentImg = await loadImage(photoMap[photoName]);
                         if (studentImg) {
                             ctx.drawImage(studentImg, photoBounds.x, photoBounds.y, photoBounds.width, photoBounds.height);
+                            URL.revokeObjectURL(studentImg.src);
                         }
                     }
 
-                 // Thiết lập màu chữ và căn lề trên
+                    // Thiết lập màu chữ và căn lề trên
                     ctx.fillStyle = "black";
                     ctx.textBaseline = "top";
 
@@ -250,14 +251,6 @@
                         }
                     }
 
-                    // Điền Text
-                    for (const [key, coords] of Object.entries(textCoords)) {
-                        let value = row[key];
-                        if (value !== undefined && value !== null) {
-                            ctx.fillText(String(value), coords.x, coords.y);
-                        }
-                    }
-
                     // Lấy dữ liệu ảnh và lưu vào ZIP
                     const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.95));
                     
@@ -271,6 +264,7 @@
                     zip.file(fileName, blob);
                 }
 
+                URL.revokeObjectURL(templateImg.src);
                 statusBox.innerText = "Đang nén file ZIP, vui lòng đợi giây lát...";
 
                 // 5. Xuất file ZIP
